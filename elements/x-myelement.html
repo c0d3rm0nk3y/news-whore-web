@@ -1,0 +1,80 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<!--
+##### Example
+
+    <x-myelement></x-myelement>
+
+@element x-myelement
+@blurb Element providing solution to [...].
+@status [...]
+@homepage https://.../x-myelement
+-->
+
+<polymer-element name="x-myelement" attributes="attr">
+  <template>
+    <link rel="stylesheet" href="x-myelement.css">
+    <core-ajax auto
+               id="ajax"
+               withCredentials="true"
+               on-core-response="{{handleResponse}}"
+               headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
+               response="{{response}}"></core-ajax>
+    <div id="title">{{title}}</div>
+    monkey<br>
+    kitty<br>
+    ducky<br>
+    <br><br>
+
+    <content>
+
+    </content>
+  </template>
+
+  <script>
+    Polymer('x-myelement', {
+      /**
+       * The `noevent` event is not actually fired from here,
+       * we document it as an example of documenting events.
+       *
+       * @event noevent
+       */
+
+      /**
+       * The `attr` attribute does not yet have a purpose.
+       *
+       * @attribute attr
+       * @type string
+       */
+      attr: '',
+      response: '',
+
+      ready: function() {
+        console.log('x-myelement.ready()');
+        //this.$.ajax.go();
+
+      },
+
+      handleResponse: function(e) {
+        console.log(JSON.stringify(JSON.parse(this.response), null, 2));
+      },
+      /**
+       * This function will be invoked every time `attr` gets changed.
+       */
+      attrChanged: function() {
+      },
+
+      /**
+       * The `task` method does [...]
+       *
+       * @method task
+       * @return {Object} Returns [...].
+       * @param {String} dummy Defines [...].
+       */
+      task: function(dummy) {
+      }
+    });
+  </script>
+</polymer-element>
