@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+
+<polymer-element name="news-service" attributes="news">
+
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+    </style>
+
+    <core-ajax auto
+               id="ajax"
+               withCredentials="true"
+               headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
+               on-core-response="{{newsLoaded}}"
+               handleAs="json">
+    </core-ajax>
+
+  </template>
+
+  <script>
+
+    Polymer(
+      'news-service', {
+        created: function() {
+          this.news = [];
+        },
+        newsLoaded: function() {
+          this.news = this.$.ajax.response.slice(0);
+        },
+        toggleRead: function(index) {
+          // this.news[index] = !this.posts[index].isRead;
+          // in reality a API call is made toggling the post..
+        }
+
+      }
+    );
+
+  </script>
+
+</polymer-element>

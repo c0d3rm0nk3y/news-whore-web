@@ -1,0 +1,66 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="news-service.html">
+
+<polymer-element name="news-list">
+
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+
+      .row {
+        box-sizing: border-box;
+        border-bottom: 1px solid #ddd;
+        padding: 4px;
+        cursor: default;
+        background-color: white;
+        overflow: hidden;
+      }
+
+      #listContainer {
+        width: 100%;
+        height: 18px;
+        overflow: auto;
+      }
+
+      .mylist {
+        height: 540px;
+      }
+    </style>
+
+    <news-service id="service" news="{{news}}">
+    </news-service>
+
+    <core-list data="{{news}}" class="mylist" flex>
+      <template>
+        <div class="row" layout horizontal>
+          <a href="{{model.link}}">{{model.title}}</a>
+        </div>
+      </template>
+    </core-list>
+  </template>
+
+  <script>
+
+    Polymer(
+      'news-list', {
+       mydata: [{name: "1"}, {name: "2"}, {name: "3"}, {name: "4"}],
+        created: function() {
+          console.log('news-list.created()..');
+          console.log();
+        },
+        ready: function() {
+          console.log('news-list.ready()\n+', this.news);
+          //console.log(Object.keys(this.news).length);
+        }
+      }
+    );
+
+  </script>
+
+</polymer-element>
