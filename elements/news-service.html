@@ -5,15 +5,6 @@
 <polymer-element name="news-service" attributes="news keywords scoring num when">
 
   <template>
-    <style>
-      :host {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-      }
-    </style>
-
     <core-ajax
                id="ajax"
                withCredentials="true"
@@ -48,17 +39,33 @@
         fetch: function(keywords, scoring, num, when) {
           console.log('\nnews-service.fetch(): called..');
           console.log('\nkeywords: %s\nscoring: %s\nnum: %s\nwhen: %s', keywords, scoring, num, when);
-          while(keywords.indexOf(' ') > -1 )
-            keywords = keywords.replace(' ', '+');
+          keywords = prepKeywords(keywords);
+
           var uri = "http://" + this.username + ":" + this.password + "@" +
                      this.baseUrl + "keywords=" + keywords + "&num=" + num;
-
-
           console.log(uri);
           this.$.ajax.url = uri;
           this.$.ajax.go();
+        },
+        fetchSimple: function(keywords) {
+          try {
+            keywords = prepKeywords(keywords);
+            var uri = "http://" + this.username + ":" + this.password + "@" +
+                     this.baseUrl + "keywords=" + keywords + "&num=100";
+          } catch(e) {
+            console.log('exception: %s', e);
+          }
+        },
+        prepKeywords: function(keywords) {
+          try {
+            while(keywords.indexOf(' ') > -1) {
+              keywords = keywords.replace(' ', '+');
+            }
+            return keywords;
+          } catch(e) {
+            console.log('exception: %s', e);
+          }
         }
-
       }
     );
 
