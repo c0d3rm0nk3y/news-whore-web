@@ -48,10 +48,13 @@
           this.$.ajax.go();
         },
         fetchSimple: function(keywords) {
+          console.log('fetchSimple().. keywords: %s', keywords);
           try {
-            keywords = prepKeywords(keywords);
+            keywords = this.prepKeywords(keywords);
             var uri = "http://" + this.username + ":" + this.password + "@" +
                      this.baseUrl + "keywords=" + keywords + "&num=100";
+            this.$.ajax.url = uri;
+            this.$.ajax.go();
           } catch(e) {
             console.log('exception: %s', e);
           }
@@ -65,6 +68,7 @@
           } catch(e) {
             console.log('exception: %s', e);
           }
+          return keywords;
         }
       }
     );
