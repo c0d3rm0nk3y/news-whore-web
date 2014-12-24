@@ -12,7 +12,7 @@
 <link rel="import" href="news-service.html">
 
 
-<polymer-element name="news-whore">
+<polymer-element name="news-whore" extends="news-service" >
 
   <template>
     <style>
@@ -59,8 +59,7 @@
       }
       #list {
         width: 100%;
-        height: 100;
-        position: relative;
+        height: 200px;
         overflow: auto;
       }
       #btnGo {
@@ -71,17 +70,24 @@
       paper-button:hover {
         background: #01DF3A;
       }
-      #item {
-        position: relative;
-        width: 100%;
-        height: 100%;
+      .item {
+        box-sizing: border-box;
+        height: 80px;
+        border-bottom: 1px solid #ddd;
+        padding: 4px;
+        cursor: default;
+        background-color: white;
+        overflow: hidden;
+      }
+      #row {
+        height: 18px;
       }
       #searchContainer {
         margin-left: 5px;
       }
     </style>
 
-    <news-service id="newsService" data="{{news}}"></news-service>
+    <!--<news-service id="newsService" data="{{news}}" ></news-service>-->
 
     <core-scaffold id="core_scaffold">
       <core-header-panel mode="seamed" id="hPanel" navigation flex>
@@ -102,9 +108,12 @@
         <h3>Results</h3>
         <core-list id="list" data="{{news}}" scrollTarget="{{$.hPannel.scroller}}" flex>
 
-          <template flex>
-            <span id="item">{{model.title}}</span>
+          <template>
+            <div class="item">
+              <span class="from">{{model.title}}</span>
+            </div>
           </template>
+
         </core-list>
       </div>
     </core-scaffold>
@@ -114,17 +123,24 @@
 
     Polymer('news-whore', {
       created: function() {},
-      ready: function() {},
+      ready: function() {
+        //this.news = this.$.newsService.data;
+      },
       domReady: function() {},
       goClicked: function() {
         try {
           console.log('goClicked(). clicked!');
           console.log(this.$.keywords.value);
-          this.$.newsService.fetchSimple(this.$.keywords.value);
-          console.log('news-whore.goClicked() news\n%s', this.$.newsService.news);
+          this.fetchSimple(this.$.keywords.value);
+          console.log('news-whore.goClicked() news\n%s', this.news);
+          //this.$.list.data = this.$.newsService.data;
         } catch(e) {
           console.log('goClicked() e: %s', e);
         }
+      },
+      attributeChanged: function(attrName, oldVal, newVal) {
+        //var newVal = this.getAttribute(attrName);
+        console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
       }
     });
 

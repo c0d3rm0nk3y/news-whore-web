@@ -10,7 +10,7 @@
                withCredentials="true"
                headers='{"Access-Control-Allow-Credentials": "true"}'
                url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
-               on-core-response="{{newsLoaded}}"
+               on-core-response={{newsLoaded}}
                response="{{news}}"
                handleAs="json">
     </core-ajax>
@@ -24,14 +24,15 @@
         baseUrl: "monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?",
         username: "datawhore",
         password: "monkeyFun!",
-
+        news: [{title: "first"},{title: "next"},{title: "monkey"},{title: "last"}],
         created: function() {
-          this.news = [];
+
         },
         newsLoaded: function() {
-          this.news = this.$.ajax.response.slice(0);
+
           console.log("Count: %s", Object.keys(this.news).length);
           console.log(this.news[0]);
+
         },
         toggleRead: function(index) {
           // this.news[index] = !this.posts[index].isRead;
@@ -47,6 +48,10 @@
           console.log(uri);
           this.$.ajax.url = uri;
           this.$.ajax.go();
+        },
+        attributeChanged: function(attrName, oldVal, newVal) {
+          //var newVal = this.getAttribute(attrName);
+          console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
         },
         fetchSimple: function(keywords) {
           console.log('fetchSimple().. keywords: %s', keywords);
