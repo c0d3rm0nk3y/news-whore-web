@@ -10,6 +10,8 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
 <link rel="import" href="news-service.html">
+<link rel="import" href="news-card.html">
+<script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
 
 
 <polymer-element name="news-whore" extends="news-service" >
@@ -108,9 +110,7 @@
         <core-list id="list" data="{{news}}" scrollTarget="{{$.hPannel.scroller}}" flex>
 
           <template>
-            <div class="item">
-              <span class="from">{{model.title}}</span>
-            </div>
+            <news-card title="{{model.title}}" published="{{model.published}}" content="{{model.content}}"></news-card>
           </template>
 
         </core-list>
@@ -122,11 +122,32 @@
 
     Polymer('news-whore', {
       created: function() {},
+
       ready: function() {
-        //this.news = this.$.newsService.data;
+        this.news.push({title: 'monkey title ending'});
+        //this.socketIni();
       },
+      socketIni: function() {
+        socket = io('http://monkey-nodejs-71725.usw1.nitrousbox.com:8080');
+
+        socket.on('msg', function(msg) {
+          console.log('msg from server:\n%s', JSON.stringify(msg));
+          console.log(msg.msg);
+          if(msg.msg == 'connection successful!') { this.news = []; Platform.flush(); }
+          console.log(this.news);
+        });
+
+        socket.on('article', function(package) {
+          console.log('%s: Article Received: %s', new Date().toLocaleTimeString(), package.title);
+          this.news.push(package);
+          this.news.push('title: "monkeys a coming"');
+          console.log('%s: Article Count: %s', new Date().toLocaleTimeString(), this.news.length);
+        });
+      },
+
       domReady: function() {},
-      goClicked: function() {
+
+      searchNews: function() {
         try {
           console.log('goClicked(). clicked!');
           console.log(this.$.keywords.value);
@@ -137,6 +158,16 @@
           console.log('goClicked() e: %s', e);
         }
       },
+
+      goClicked: function() {
+        try {
+          console.log('goClicked()..');
+          this.searchNews();
+          //socket.emit('searchNews', {keywords: this.$.keywords.value});
+        }
+        catch(e) { console.log('goClicked() e: %s', e); }
+      },
+
       attributeChanged: function(attrName, oldVal, newVal) {
         //var newVal = this.getAttribute(attrName);
         console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
