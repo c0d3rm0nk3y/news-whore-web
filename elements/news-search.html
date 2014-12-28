@@ -1,0 +1,124 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="news-search" attributes="articles">
+  <template>
+    <!--
+      /searchNews?keywords=term+term+term
+    -->
+    <core-ajax id="searchNews" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
+               on-core-response={{onSearchResponse}}
+               response="{{results}}"
+               handleAs="json">
+    </core-ajax>
+
+    <core-ajax id="scrubArticle" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/scrubArticle?link="
+               on-core-response={{onScrubResponse}}
+               response="{{article}}"
+               handleAs="json">
+    </core-ajax>
+
+  </template>
+  <script>
+    Polymer('news-search', {
+      apiUrl : "http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/",
+      sn : "searchNews?keywords=",
+      sa : "scrubArticle?link=",
+      /**results**
+
+        results: {
+          type: 'search',
+          content: [
+            {
+              title,
+              link,
+              published,
+              body
+            }
+          }
+        ]
+      */
+      results: [],
+
+      /**article**
+        article : {
+          type: 'article',
+          content: {
+            index,
+            title,
+            body
+          }
+        }
+      */
+      article: {},
+
+      /**articles**
+        [
+          {
+            title,
+            link,
+            published,
+            body
+          },
+          {...},
+          ...
+        ]
+      */
+      articles: [],
+      lastIndex: 0,
+
+      ready: function() {},
+
+      onSearchResponse: function() {
+        try {
+          // send out first scrub request
+          // build url
+          this.articles = this.results.content;
+          console.log('%s: articles\n%s', new Date().toTimeString(), this.articles);
+          this.$.scrubArticle.url = this.apiUrl +
+                                    this.sa +
+                                    this.articles[this.lastIndex].link +
+                                    "&index=" + this.lastIndex;
+          // send it off
+          this.$.scrubArticle.go();
+          console.log('%s: Search Results Received, sending first for processing\n%s', new Date().toTimeString(), this.articles[this.lastIndex].link);
+        } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
+      },
+
+      onScrubResponse: function() {
+        try {
+          if(this.article.type !== 'skip') {
+            console.log('%s: Article %s of %s received', new Date().toTimeString(), this.article.content.index, this.articles.length);
+            this.articles[this.article.content.index].body = this.article.content.body;
+          }
+          this.lastIndex++;
+          this.$.scrubArticle.url = this.apiUrl +
+                                    this.sa +
+                                    this.articles[this.lastIndex].link +
+                                    "&index=" +
+                                    this.lastIndex;
+          // send it off
+          this.$.scrubArticle.go();
+          console.log('%s: Article %s of %s sent..', new Date().toTimeString(), this.lastIndex, this.articles.length);
+          // for(var i=0; i<this.results.length; i++) {
+            //   if(this.results[i].title === this.article.title) {
+            //     this.results[i].content === this.article.body;
+            //   }
+            // }
+
+        } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
+      },
+
+      searchNews: function(keywords) {
+        try {
+          this.$.searchNews.url = this.apiUrl + this.sn + keywords.split(' ').join('+');
+          this.$.searchNews.go();
+          console.log('%s: Sending Search Request...', new Date().toTimeString());
+        } catch(ex) { console.log('() ex: %s', ex); }
+      },
+    });
+  </script>
+</polymer-element>
+
