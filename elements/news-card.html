@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/core-icons/av-icons.html">
 
-<polymer-element name="news-card" attributes="title published content">
+<polymer-element name="news-card" attributes="aTitle aPublished aBody">
 
   <template>
     <style>
@@ -29,14 +29,14 @@
       }
     </style>
     <core-card id="core_card" layout vertical>
-      <h3 id="title">{{ title }}</h3>
-      <h5 id="published">{{ published }}</h5>
+      <h3 id="aTitle">{{ aTitle }}</h3>
+      <h5 id="aPublished">{{ aPublished }}</h5>
       <div layout horizontal>
         <core-icons icon="fast-rewind"></core-icons>
 
         <core-icons icon="fast-forward"></core-icons>
       </div>
-      <span id="content">{{content}}</span>
+      <span id="aBody">{{aBody}}</span>
       <!--<core-icon-button icon="menu" id="core_icon_button" theme="core-light-theme"></core-icon-button>-->
     </core-card>
   </template>
@@ -44,34 +44,14 @@
   <script>
 
     Polymer({
-      title: 'this is a title',
-      published: '12/27/2014, 1:52:01 PM',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vestibulum, risus ut scelerisque consectetur, elit ex scelerisque lacus, at eleifend nulla nulla a libero. Suspendisse non ligula pellentesque velit elementum pellentesque. Morbi molestie justo non faucibus sollicitudin. Proin a faucibus tortor. Cras ac aliquet justo. Aenean eu augue eget tellus hendrerit tempus. In luctus laoreet dapibus. Integer vitae lorem eget diam mollis tincidunt. Nunc consequat, risus quis finibus iaculis, felis nisi efficitur purus, vel pellentesque orci eros id est. Nulla at malesuada dui. Nulla tincidunt ornare varius.  Fusce semper velit arcu, eu iaculis nibh porta at. Quisque eleifend sem eu est elementum, nec consectetur quam mattis. Aenean id eleifend velit, a iaculis quam. In quis felis in erat interdum fermentum ut ut nisi. Nam hendrerit mattis sapien non pellentesque. Duis rutrum diam dui, at efficitur turpis facilisis eu. Donec in tellus lacinia, dignissim tortor quis, tempus justo. Pellentesque vel mattis velit, sit amet condimentum massa. Vestibulum et fringilla felis, nec gravida urna.  Aliquam ante sapien, volutpat sit amet blandit ac, rutrum sit amet tortor. Donec sem tortor, mollis et sagittis sit amet, sagittis ac nibh. Integer hendrerit, quam sed sollicitudin pulvinar, urna diam aliquet eros, eget viverra purus felis sit amet ex. Vestibulum at arcu eget dolor viverra ultricies. Duis at porttitor nibh. Quisque nec interdum neque. Curabitur leo mauris, dictum in lectus at, ullamcorper sodales lacus. Phasellus dui nunc, aliquam ac justo eu, egestas finibus lorem. Vivamus vulputate accumsan dui, vel laoreet massa tristique eget. Phasellus at aliquam lectus. Etiam lacus metus, porttitor et urna sed, placerat malesuada lacus. Quisque luctus non neque id efficitur. Integer dapibus imperdiet augue, vitae interdum neque maximus placerat. Curabitur cursus eros quis lorem bibendum rutrum. Ut ac urna diam.',
+      aTitle: '',
+      aPublished: '',
+      aBody: '',
 
-      ready: function() {
-        console.log('ready(): published: %s', this.published);
-
-      },
-
-      created: function() {
-        console.log('created(): published: %s', this.published);
-      },
-
-      domReady: function() {
-        console.log('domReady(): published: %s', this.published);
-      },
-
-      attributeChanged: function(attrName, oldVal, newVal) {
-        //var newVal = this.getAttribute(attrName);
-        // 2014-12-27T06:01:21.000Z
-        if(attrName === 'published') {
-          //console.log('published changed');
-          var d = new Date(newVal);
-          newVal = d.toLocaleString();
-          //console.log(newVal);
-        }
-        //console.log(attrName, 'old: ' + oldVal, 'new:', newVal);
-      }
+      ready: function() {  },
+      created: function() {  },
+      domReady: function() { },
+      attributeChanged: function(attrName, oldVal, newVal) { }
     });
 
   </script>

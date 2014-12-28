@@ -12,7 +12,7 @@
                url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
                on-core-response={{newsLoaded}}
                response="{{news}}"
-               handleAs="json">
+               handleAs="json"
     </core-ajax>
 
   </template>
@@ -29,10 +29,31 @@
 
         },
         newsLoaded: function() {
+          /** Message from server should come below
+           *  type - the type of data ( search|article )
+           *   *
+           *  content - content of this specific type of
+           *   { type : "search|article" ,
+           *     content : {
+           *       title: "",
+           *       body : ""
+           *     }
+           *   }
+           **/
+
+         if(news.type === "search") {
+
+         } else if (news.type === "article") {
+           // date Rx is an article.  loop through 'news'
+           // object and find matching title and add 'content'
+
+           for(var i=0; i<this.news.length; i++) {
+             if(this.news[i].title === news) {}
+           }
+        }
+
           console.log("Count: %s", Object.keys(this.news).length);
           console.log(this.news[0]);
-
-
         },
         toggleRead: function(index) {
           // this.news[index] = !this.posts[index].isRead;

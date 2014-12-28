@@ -9,12 +9,12 @@
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
-<link rel="import" href="news-service.html">
+<link rel="import" href="news-search.html">
 <link rel="import" href="news-card.html">
 <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
 
 
-<polymer-element name="news-whore" extends="news-service" >
+<polymer-element name="news-whore" extends="news-search" >
 
   <template>
     <style>
@@ -88,8 +88,6 @@
       }
     </style>
 
-    <!--<news-service id="newsService" data="{{news}}" ></news-service>-->
-
     <core-scaffold id="core_scaffold">
       <core-header-panel mode="seamed" id="hPanel" navigation flex>
         <core-toolbar id="core_toolbar"></core-toolbar>
@@ -107,10 +105,10 @@
       <div id="div" tool>News Whore</div>
       <div id="content">
         <h3>Results</h3>
-        <core-list id="list" data="{{news}}" scrollTarget="{{$.hPannel.scroller}}" flex>
+        <core-list id="list" data="{{articles}}" scrollTarget="{{$.hPannel.scroller}}" flex>
 
           <template>
-            <news-card title="{{model.title}}" published="{{model.published}}" content="{{model.content}}"></news-card>
+            <news-card aTitle="{{model.title}}" aPublished="{{model.published}}" aBody="{{model.body}}"></news-card>
           </template>
 
         </core-list>
@@ -124,7 +122,6 @@
       created: function() {},
 
       ready: function() {
-        this.news.push({title: 'monkey title ending'});
         //this.socketIni();
       },
       socketIni: function() {
@@ -147,22 +144,10 @@
 
       domReady: function() {},
 
-      searchNews: function() {
-        try {
-          console.log('goClicked(). clicked!');
-          console.log(this.$.keywords.value);
-          this.fetchSimple(this.$.keywords.value);
-          console.log('news-whore.goClicked() news\n%s', this.news);
-          //this.$.list.data = this.$.newsService.data;
-        } catch(e) {
-          console.log('goClicked() e: %s', e);
-        }
-      },
-
       goClicked: function() {
         try {
-          console.log('goClicked()..');
-          this.searchNews();
+          console.log('%s: goClicked()..', new Date().toTimeString());
+          this.searchNews(this.$.keywords.value);
           //socket.emit('searchNews', {keywords: this.$.keywords.value});
         }
         catch(e) { console.log('goClicked() e: %s', e); }
