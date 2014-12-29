@@ -72,14 +72,6 @@
       paper-button:hover {
         background: #01DF3A;
       }
-      .item {
-        box-sizing: border-box;
-        border-bottom: 1px solid #ddd;
-        padding: 4px;
-        cursor: default;
-        background-color: white;
-        overflow: hidden;
-      }
       #row {
         height: 18px;
       }
@@ -147,6 +139,7 @@
       goClicked: function() {
         try {
           console.log('%s: goClicked()..', new Date().toTimeString());
+          this.reset();
           this.searchNews(this.$.keywords.value);
           //socket.emit('searchNews', {keywords: this.$.keywords.value});
         }

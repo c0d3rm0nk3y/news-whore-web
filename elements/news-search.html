@@ -48,6 +48,7 @@
           content: {
             index,
             title,
+            link,
             body
           }
         }
@@ -71,42 +72,52 @@
 
       ready: function() {},
 
+      reset: function() {
+        this.articles = [];
+        this.results  = [];
+        this.index    = 0;
+        this.article  = {};
+      },
+
       onSearchResponse: function() {
         try {
           // send out first scrub request
           // build url
-          this.articles = this.results.content;
-          console.log('%s: articles\n%s', new Date().toTimeString(), this.articles);
+          this.results.content;
+          console.log('%s: articles count\n%s', new Date().toTimeString(), this.results.content.length);
           this.$.scrubArticle.url = this.apiUrl +
                                     this.sa +
-                                    this.articles[this.lastIndex].link +
+                                    this.results.content[this.lastIndex].link +
                                     "&index=" + this.lastIndex;
           // send it off
           this.$.scrubArticle.go();
-          console.log('%s: Search Results Received, sending first for processing\n%s', new Date().toTimeString(), this.articles[this.lastIndex].link);
+          console.log('%s: Search Results Received, sending first for processing\n%s',
+                      new Date().toTimeString(), this.results.content[this.lastIndex].link);
         } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
       },
 
       onScrubResponse: function() {
         try {
-          if(this.article.type !== 'skip') {
-            console.log('%s: Article %s of %s received', new Date().toTimeString(), this.article.content.index, this.articles.length);
-            this.articles[this.article.content.index].body = this.article.content.body;
+          if(this.article.type !== 'skip' || this.article.content.index !== undefined) {
+
+            console.log('%s: Article %s of %s received',
+                        new Date().toTimeString(),
+                        this.article.content.index,
+                        this.results.content.length);
+            console.log('%s: \n %s \n', new Date().toTimeString(), JSON.stringify(this.article.content, null, 2));
+            //console.log('%s\n%s', new Date().toTimeString(), JSON.stringify(this.article, null, 2));
+            this.articles.push(this.article.content);
+            //this.articles[this.article.content.index].body = this.article.content.body;
           }
           this.lastIndex++;
           this.$.scrubArticle.url = this.apiUrl +
                                     this.sa +
-                                    this.articles[this.lastIndex].link +
+                                    this.results.content[this.lastIndex].link +
                                     "&index=" +
                                     this.lastIndex;
           // send it off
           this.$.scrubArticle.go();
-          console.log('%s: Article %s of %s sent..', new Date().toTimeString(), this.lastIndex, this.articles.length);
-          // for(var i=0; i<this.results.length; i++) {
-            //   if(this.results[i].title === this.article.title) {
-            //     this.results[i].content === this.article.body;
-            //   }
-            // }
+          console.log('%s: Article %s of %s sent..', new Date().toTimeString(), this.lastIndex, this.results.content.length);
 
         } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
       },
