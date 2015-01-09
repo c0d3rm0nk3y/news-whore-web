@@ -6,19 +6,41 @@
     <!--
       /searchNews?keywords=term+term+term
     -->
-    <core-ajax id="searchNews" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
+    <core-ajax id="searchNews" withCredentials="true"
+               headers='{"Access-Control-Allow-Credentials": "true"}'
                url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/searchNews?keywords=sony+hacked+2014"
                on-core-response={{onSearchResponse}}
                response="{{results}}"
-               handleAs="json">
-    </core-ajax>
+               method='POST'
+               handleAs="json"></core-ajax>
+
+    <!--<core-ajax id="getSearches" withCredentials="true"-->
+    <!--           auto-->
+    <!--           headers="{'Access-Control-Allow-Credentials': 'true'}"-->
+    <!--           url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/getSearches"-->
+    <!--           on-core-response="{{onGetSearches}}"-->
+    <!--           response="{{searches}}"-->
+    <!--           handleAs="json"></core-ajax>-->
+
+    <core-ajax id="getSearches" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/getSearches"
+               on-core-response={{onGetSearches}}
+               response="{{searches}}"
+               auto
+               handleAs="json"></core-ajax>
+
+     <core-ajax id="getSearchArticles" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
+               url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/"
+               on-core-response={{onSearchArticles}}
+               response="{{searchArticles}}"
+               handleAs="json"></core-ajax>
+
 
     <core-ajax id="scrubArticle" withCredentials="true" headers='{"Access-Control-Allow-Credentials": "true"}'
                url="http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/scrubArticle?link="
                on-core-response={{onScrubResponse}}
                response="{{article}}"
-               handleAs="json">
-    </core-ajax>
+               handleAs="json"></core-ajax>
 
   </template>
   <script>
@@ -26,6 +48,7 @@
       apiUrl : "http://datawhore:monkeyFun1!@monkey-nodejs-71725.usw1.nitrousbox.com:8080/api/",
       sn : "searchNews?keywords=",
       sa : "scrubArticle?link=",
+      gsa : "getSearchArticles?searchId=",
       /**results**
 
         results: {
@@ -53,6 +76,7 @@
           }
         }
       */
+
       article: {},
 
       /**articles**
@@ -69,7 +93,23 @@
       */
       articles: [],
       lastIndex: 0,
-
+      searches: [],
+      onGetSearches: function() {
+        console.log('previous searches..');
+        for(var i=0; i<this.searches.length; i++) {
+          console.log(this.searches[i].keywords);
+        }
+        //console.log(JSON.stringify(this.searches,null,2));
+      },
+      searchArticles : [],
+      onSearchArticles : function() {
+        console.log('%s: onSearchArticles: Message: %s', new Date().toTimeString(), this.searchArticles.message);
+        console.log('%s: %s Articles found!', new Date().toTimeString(), this.searchArticles.articles.length);
+        this.articles = this.searchArticles.articles;
+        for(var i=0; i<this.searchArticles.articles.length; i++) {
+          console.log("%s: %s %s", new Date().toTimeString(), this.searchArticles.articles[i].published, this.searchArticles.articles[i].title);
+        }
+      },
       ready: function() {},
 
       reset: function() {
@@ -84,15 +124,19 @@
           // send out first scrub request
           // build url
           this.results.content;
-          console.log('%s: articles count\n%s', new Date().toTimeString(), this.results.content.length);
-          this.$.scrubArticle.url = this.apiUrl +
-                                    this.sa +
-                                    this.results.content[this.lastIndex].link +
-                                    "&index=" + this.lastIndex;
-          // send it off
-          this.$.scrubArticle.go();
-          console.log('%s: Search Results Received, sending first for processing\n%s',
-                      new Date().toTimeString(), this.results.content[this.lastIndex].link);
+          console.log(JSON.stringify(this.results, null, 2));
+          // console.log('%s: articles count\n%s', new Date().toTimeString(), this.results.content.length);
+          // this.$.scrubArticle.url = this.apiUrl +
+          //                           this.sa +
+          //                           this.results.content[this.lastIndex].link +
+          //                           "&index=" + this.lastIndex;
+          // // send it off
+          // this.$.scrubArticle.go();
+          // console.log('%s: Search Results Received, sending first for processing\n%s',
+          //             new Date().toTimeString(), this.results.content[this.lastIndex].link);
+          this.$.getSearchArticles.url = this.apiUrl + this.gsa + this.results.search._id;
+          console.log(this.$.getSearchArticles.url);
+          this.$.getSearchArticles.go();
         } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
       },
 
@@ -124,6 +168,7 @@
 
       searchNews: function(keywords) {
         try {
+          // post
           this.$.searchNews.url = this.apiUrl + this.sn + keywords.split(' ').join('+');
           this.$.searchNews.go();
           console.log('%s: Sending Search Request...', new Date().toTimeString());

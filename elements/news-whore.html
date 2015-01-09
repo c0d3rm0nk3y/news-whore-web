@@ -8,6 +8,9 @@
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
 <link rel="import" href="news-search.html">
 <link rel="import" href="news-card.html">
@@ -24,6 +27,7 @@
         height: 100%;
         box-sizing: border-box;
       }
+
       h4 {
         padding: 5px;
       }
@@ -60,8 +64,20 @@
         position: relative;
       }
       #list {
+        height: 75%;
+        width: 95%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        margin: 1px;
+        padding: 5px;
+      }
+      #content {
+        height: 75%;
+        overflow-y:hidden;
+      }
+      #prevSearches {
+        height: 300px;
         width: 100%;
-        height: 600px;
         overflow: auto;
       }
       #btnGo {
@@ -71,6 +87,11 @@
       }
       paper-button:hover {
         background: #01DF3A;
+      }
+
+      news-card {
+        height: 300px;
+        width: 200px;
       }
       #row {
         height: 18px;
@@ -82,7 +103,11 @@
 
     <core-scaffold id="core_scaffold">
       <core-header-panel mode="seamed" id="hPanel" navigation flex>
-        <core-toolbar id="core_toolbar"></core-toolbar>
+
+        <core-toolbar id="core_toolbar">
+          <div flex>Searching...</div>
+        </core-toolbar>
+
         <div id="searchContainer">
           <h4 id="h4">Keywords</h4>
           <paper-input label="keywords" value="sony hack 2014" id="keywords"></paper-input>
@@ -92,15 +117,37 @@
             <paper-radio-button label="Oldest" id="descending"></paper-radio-button>
           </paper-radio-group>
         </div>
+
         <paper-button id="btnGo" on-click="{{goClicked}}">Go</paper-button>
+
+        <core-list id="prevSearches" data="{{searches}}" flex>
+          <template>
+            <span>{{model.keywords}}</span>
+          </template>
+        </core-list>
       </core-header-panel>
-      <div id="div" tool>News Whore</div>
-      <div id="content">
+
+      <div id="div" main layout vertical tool>
+        <core-toolbar>
+          <div id="title" flex>News Whore</div>
+
+        </core-toolbar>
+      </div>
+      <div id="content" flex>
         <h3>Results</h3>
-        <core-list id="list" data="{{articles}}" scrollTarget="{{$.hPannel.scroller}}" flex>
+        <core-list id="list"
+                   grid="true"
+                   width="300"
+                   data="{{articles}}"
+                   scrollTarget="{{$.hPannel.scroller}}"
+                   flex>
 
           <template>
-            <news-card aTitle="{{model.title}}" aPublished="{{model.published}}" aBody="{{model.body}}"></news-card>
+
+            <news-card aTitle="{{model.title}}"
+                       aPublished="{{model.published}}"
+                       aBody="{{model.text}}"></news-card>
+
           </template>
 
         </core-list>
@@ -115,6 +162,15 @@
 
       ready: function() {
         //this.socketIni();
+      },
+
+      onGetSearches: function() {
+        this.super();
+        this.$.prevSearches.updateSize();
+      },
+      onSearchArticles: function() {
+        this.super();
+        this.$.list.updateSize();
       },
       socketIni: function() {
         socket = io('http://monkey-nodejs-71725.usw1.nitrousbox.com:8080');
