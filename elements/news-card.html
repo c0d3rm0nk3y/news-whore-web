@@ -53,12 +53,18 @@
       aPublished: '',
       aBody: '',
 
-      ready: function() { console.log('element ready: Title: %s, Published %s', this.aTitle, this.aPublished); },
-      created: function() { console.log('element created: Title: %s, Published %s', this.aTitle, this.aPublished); },
+      ready: function() {
+        //console.log('element ready: Title: %s, Published %s', this.aTitle, this.aPublished);
+
+      },
+      created: function() {
+        //console.log('element created: Title: %s, Published %s', this.aTitle, this.aPublished);
+
+      },
       domReady: function() {
-        console.log('domReady: Title: %s, Published %s', this.aTitle, this.aPublished);
-        this.aPublished = this.aPublished.replace('T', ' ');
-        this.aPublished = this.aPublished.replace('Z', '');
+        //console.log('domReady: Title: %s, Published %s', this.aTitle, this.aPublished);
+        this.aPublished = new Date(this.aPublished).toString();
+        //this.aPublished = this.aPublished.replace('Z', '');
       },
       attributeChanged: function(attrName, oldVal, newVal) {
 

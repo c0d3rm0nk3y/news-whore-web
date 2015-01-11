@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 
-<polymer-element name="news-search" attributes="articles">
+<polymer-element name="news-search" attributes="articles searches">
   <template>
     <!--
       /searchNews?keywords=term+term+term
@@ -95,10 +95,11 @@
       lastIndex: 0,
       searches: [],
       onGetSearches: function() {
-        console.log('previous searches..');
-        for(var i=0; i<this.searches.length; i++) {
-          console.log(this.searches[i].keywords);
-        }
+        console.log('%s: previous searches..', new Date().toTimeString() );
+
+        // for(var i=0; i<this.searches.length; i++) {
+        //   console.log(this.searches[i].keywords);
+        // }
         //console.log(JSON.stringify(this.searches,null,2));
       },
       searchArticles : [],
@@ -106,9 +107,9 @@
         console.log('%s: onSearchArticles: Message: %s', new Date().toTimeString(), this.searchArticles.message);
         console.log('%s: %s Articles found!', new Date().toTimeString(), this.searchArticles.articles.length);
         this.articles = this.searchArticles.articles;
-        for(var i=0; i<this.searchArticles.articles.length; i++) {
-          console.log("%s: %s %s", new Date().toTimeString(), this.searchArticles.articles[i].published, this.searchArticles.articles[i].title);
-        }
+
+        //console.log('%s: search articles\n%s', new Date().toTimeString(), JSON.stringify(this.searchArticles.articles[0], null, 2));
+
       },
       ready: function() {},
 
@@ -121,11 +122,13 @@
 
       onSearchResponse: function() {
         try {
+          console.log('%s: onSearchResponse()', new Date().toTimeString());
           // send out first scrub request
           // build url
           this.results.content;
-          console.log(JSON.stringify(this.results, null, 2));
-          // console.log('%s: articles count\n%s', new Date().toTimeString(), this.results.content.length);
+          console.log(JSON.stringify(this.results,null,2));
+          //console.log(JSON.stringify(this.results, null, 2));
+          //console.log('%s: articles count\n%s', new Date().toTimeString(), this.results.content.length);
           // this.$.scrubArticle.url = this.apiUrl +
           //                           this.sa +
           //                           this.results.content[this.lastIndex].link +
@@ -135,7 +138,7 @@
           // console.log('%s: Search Results Received, sending first for processing\n%s',
           //             new Date().toTimeString(), this.results.content[this.lastIndex].link);
           this.$.getSearchArticles.url = this.apiUrl + this.gsa + this.results.search._id;
-          console.log(this.$.getSearchArticles.url);
+          //console.log(this.$.getSearchArticles.url);
           this.$.getSearchArticles.go();
         } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
       },
@@ -163,15 +166,15 @@
           this.$.scrubArticle.go();
           console.log('%s: Article %s of %s sent..', new Date().toTimeString(), this.lastIndex, this.results.content.length);
 
-        } catch(ex) { console.log('onSearchResponse() ex: %s', ex); }
+        } catch(ex) { console.log('onScrubResponse() ex: %s', ex); }
       },
 
       searchNews: function(keywords) {
         try {
           // post
+          console.log('searchNews()..');
           this.$.searchNews.url = this.apiUrl + this.sn + keywords.split(' ').join('+');
           this.$.searchNews.go();
-          console.log('%s: Sending Search Request...', new Date().toTimeString());
         } catch(ex) { console.log('() ex: %s', ex); }
       },
     });

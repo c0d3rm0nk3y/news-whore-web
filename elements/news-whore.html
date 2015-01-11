@@ -4,17 +4,22 @@
 <link rel="import" href="../bower_components/core-item/core-item.html">
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="../bower_components/core-dropdown/core-dropdown.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+
 <link rel="import" href="news-search.html">
 <link rel="import" href="news-card.html">
-<script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
+<!--<script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>-->
 
 
 <polymer-element name="news-whore" extends="news-search" >
@@ -76,9 +81,10 @@
         overflow-y:hidden;
       }
       #prevSearches {
-        height: 300px;
+        height: 200px;
         width: 100%;
-        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
       }
       #btnGo {
         left: 5px;
@@ -103,28 +109,29 @@
 
     <core-scaffold id="core_scaffold">
       <core-header-panel mode="seamed" id="hPanel" navigation flex>
-
+      <paper-dialog id="readDialog" style="width:75%; height:50px;" transition="core-transition-center">
+        <p>I am groot</p>
+      </paper-dialog>
         <core-toolbar id="core_toolbar">
           <div flex>Searching...</div>
         </core-toolbar>
 
         <div id="searchContainer">
           <h4 id="h4">Keywords</h4>
-          <paper-input label="keywords" value="sony hack 2014" id="keywords"></paper-input>
-          <h4 id="h41">Sort</h4>
-          <paper-radio-group selected="Newest" valueattr="label" selectedindex="0" id="sort" layout vertical>
-            <paper-radio-button label="Newest" id="ascending"></paper-radio-button>
-            <paper-radio-button label="Oldest" id="descending"></paper-radio-button>
-          </paper-radio-group>
+          <div id="inputContainer">
+            <div layout horizontal>
+            <paper-input label="keywords" value="sony hack 2014" id="keywords" flex></paper-input>
+            <paper-button id="btnGo" on-click="{{goClicked}}">Go</paper-button>
+            </div>
+            <core-list id="prevSearches" data="{{searches}}" on-core-activate="{{onPrevSearchSelected}}" flex>
+              <template>
+                <paper-item label="{{model.keywords}}">{{model.index}} {{model.keywords}}</paper-item>
+              </template>
+            </core-list>
+          </div>
+
         </div>
 
-        <paper-button id="btnGo" on-click="{{goClicked}}">Go</paper-button>
-
-        <core-list id="prevSearches" data="{{searches}}" flex>
-          <template>
-            <span>{{model.keywords}}</span>
-          </template>
-        </core-list>
       </core-header-panel>
 
       <div id="div" main layout vertical tool>
@@ -135,8 +142,10 @@
       </div>
       <div id="content" flex>
         <h3>Results</h3>
+
         <core-list id="list"
                    grid="true"
+                   on-core-activate="{{onArticleClicked}}"
                    width="300"
                    data="{{articles}}"
                    scrollTarget="{{$.hPannel.scroller}}"
@@ -158,39 +167,59 @@
   <script>
 
     Polymer('news-whore', {
-      created: function() {},
+      created: function() {
+        console.log('%s: created()...', new Date().toTimeString());
+      },
 
       ready: function() {
+        console.log('%s: ready()...', new Date().toTimeString());
         //this.socketIni();
       },
 
+      onPrevSearchSelected: function(e) {
+        console.log('%s: onPrevSearchSelected', new Date().toTimeString());
+        console.log(e.detail.data.keywords);
+        this.$.keywords.value = e.detail.data.keywords;
+      },
+
       onGetSearches: function() {
+        console.log('%s: onGetSearches()...', new Date().toTimeString());
         this.super();
-        this.$.prevSearches.updateSize();
+
       },
       onSearchArticles: function() {
+        console.log('%s: onSearchArticles()..', new Date().toTimeString());
         this.super();
         this.$.list.updateSize();
+
       },
-      socketIni: function() {
-        socket = io('http://monkey-nodejs-71725.usw1.nitrousbox.com:8080');
+      // socketIni: function() {
+      //   socket = io('http://monkey-nodejs-71725.usw1.nitrousbox.com:8080');
 
-        socket.on('msg', function(msg) {
-          console.log('msg from server:\n%s', JSON.stringify(msg));
-          console.log(msg.msg);
-          if(msg.msg == 'connection successful!') { this.news = []; Platform.flush(); }
-          console.log(this.news);
-        });
+      //   socket.on('msg', function(msg) {
+      //     console.log('msg from server:\n%s', JSON.stringify(msg));
+      //     console.log(msg.msg);
+      //     if(msg.msg == 'connection successful!') { this.news = []; Platform.flush(); }
+      //     console.log(this.news);
+      //   });
 
-        socket.on('article', function(package) {
-          console.log('%s: Article Received: %s', new Date().toLocaleTimeString(), package.title);
-          this.news.push(package);
-          this.news.push('title: "monkeys a coming"');
-          console.log('%s: Article Count: %s', new Date().toLocaleTimeString(), this.news.length);
-        });
+      //   socket.on('article', function(package) {
+      //     console.log('%s: Article Received: %s', new Date().toLocaleTimeString(), package.title);
+      //     this.news.push(package);
+      //     this.news.push('title: "monkeys a coming"');
+      //     console.log('%s: Article Count: %s', new Date().toLocaleTimeString(), this.news.length);
+      //   });
+      // },
+
+      domReady: function() {
+        console.log('%s: domReady()..', new Date().toTimeString());
       },
 
-      domReady: function() {},
+      onArticleClicked: function(e) {
+        console.log('%s: onArticleClicked()..', new Date().toTimeString());
+        console.log(JSON.stringify(e.detail.data,null, 2));
+        this.$.readDialog.toggle();
+      },
 
       goClicked: function() {
         try {
