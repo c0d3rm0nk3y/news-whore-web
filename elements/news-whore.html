@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
 <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
 <link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
 <link rel="import" href="../bower_components/core-dropdown/core-dropdown.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
@@ -109,8 +110,12 @@
 
     <core-scaffold id="core_scaffold">
       <core-header-panel mode="seamed" id="hPanel" navigation flex>
-      <paper-dialog id="readDialog" style="width:75%; height:50px;" transition="core-transition-center">
-        <p>I am groot</p>
+      <paper-dialog id="readDialog" style="width:400px; height:100px; overflow: hidden;" transition="core-transition-center">
+        <div layout horizontal>
+          <paper-icon-button icon="menu"></paper-icon-button>
+          <div flex style="text-align: center; overflow-y:auto;">{{articleText}}</div>
+          <paper-icon-button icon="menu"></paper-icon-button>
+        </div>
       </paper-dialog>
         <core-toolbar id="core_toolbar">
           <div flex>Searching...</div>
@@ -181,6 +186,7 @@
         console.log(e.detail.data.keywords);
         this.$.keywords.value = e.detail.data.keywords;
       },
+      articleText: "",
 
       onGetSearches: function() {
         console.log('%s: onGetSearches()...', new Date().toTimeString());
@@ -218,6 +224,7 @@
       onArticleClicked: function(e) {
         console.log('%s: onArticleClicked()..', new Date().toTimeString());
         console.log(JSON.stringify(e.detail.data,null, 2));
+        this.articleText = e.detail.data.text;
         this.$.readDialog.toggle();
       },
 
