@@ -17,27 +17,7 @@ body {
 /*    border: 1px solid red;*/
 /*}*/
 
-[drawer] {
-  background-color: #97E07F;
-}
 
-#mainToolbar {
-  background-color: 	#C1ECB2;
-  color: white;
-
-}
-
-#drawerToolbar {
-  background-color: #6A9D59;
-}
-
-#input {
-  color: white;
-}
-
-[main] {
-  background-color: #35821A;
-}
 
 section {
   margin: 20px;
