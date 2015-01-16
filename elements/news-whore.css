@@ -1,0 +1,41 @@
+:host {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  top: 0px;
+  left: 0px;
+}
+
+[drawer] {
+  background-color: #81C784;
+}
+
+[main] {
+  background-color: #689F38;
+}
+
+#mainToolbar {
+  background-color: 	#33691E;
+  color: #00C853;
+}
+
+#drawerToolbar {
+  background-color: #1B5E20;
+  color: #64DD17;
+}
+
+#input {
+  background-color:white;
+  color: black;
+}
+
+.prevSrchItem {
+  color: grey;
+  text-align: center;
+}
+
+.prevSrchIcon {
+  padding-top: 15px;
+  margin-top: 5px;
+}

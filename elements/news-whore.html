@@ -1,0 +1,109 @@
+<link rel="import" href="base-elements.html">
+
+
+<polymer-element name="news-whore" attributes="">
+  <template>
+    <link rel="stylesheet" href="news-whore.css">
+
+    <core-drawer-panel>
+
+      <core-header-panel id="chpDrawer" drawer>
+        <core-toolbar id="drawerToolbar">
+          <div>News-Whore</div>
+        </core-toolbar>
+        <h3>Previous Searches</h3>
+        <!--<div style="overflow:auto; width:250px; height:300px;">-->
+          <core-list style="overflow:auto; width:250px; height:300px;" id="clList" scroller="{{$.chpDrawer}}" data="{{searches}}" flex>
+
+            <template>
+              <div layout horizontal flex>
+                <core-icon class="prevSrchIcon" on-click="{{onSearchDelete}}" icon="delete"></core-icon>
+                <core-icon class="prevSrchIcon" icon="refresh"></core-icon>
+                <paper-item class="prevSrchItem">{{model.search}}</paper-item>
+              </div>
+            </template>
+          </core-list>
+
+        <!--</div>-->
+      </core-header-panel>
+
+
+      <core-header-panel id="chpMain" main>
+        <core-toolbar id="mainToolbar">
+          <core-icon-button core-drawer-toggle icon="menu"></core-icon-button>
+
+          <input id="input" placeholder="Search News..." is="core-input" on-change="{{searchChangeEvent}}" flex>
+
+          <core-icon-button icon="search" on-click="{{searchClicked}}" ></core-icon-button>
+
+          <paper-menu-button id="menuBtn" >
+            <paper-icon-button icon="more-vert" ></paper-icon-button>
+            <paper-dropdown class="dropdown" halign="right">
+              <core-menu class="menu">
+                <paper-item>Settings</paper-item>
+                <paper-item>Help</paper-item>
+                <paper-item>Feedback</paper-item>
+              </core-menu>
+            </paper-dropdown>
+          </paper-menu-button>
+
+          </core-icon-button>
+        </core-toolbar>
+
+        <!--<core-list id="cList" scroller="{{$.chpMain.scroller}}" data="{{articles}}" flex>-->
+        <!--  <template>-->
+            <!-- news-card? something new? better?
+        <!--         better idea.. new tag to fit -->
+        <!--    -->-->
+        <!--  </template>-->
+        <!--</core-list>-->
+      </core-header-panel>
+
+    </core-drawer-panel>
+  </template>
+  <script>
+    Polymer('news-whore', {
+      searches: [
+        { search : 'kitty' },
+        { search : 'monkey' },
+        { search : 'puppy' }
+      ],
+
+      searchChangeEvent: function(e) {
+        this.log('searchChangeEvent');
+        //console.log( '{ search : /"' + this.$.input.committedValue + '/"}');
+        // test if already in array..
+        if(this.alreadySearched(this.$.input.committedValue) === false) {
+          this.searches.push({ search: this.$.input.committedValue });
+        }
+
+        this.$.input.value = "";
+      },
+
+      onSearchDelete: function(index) {
+        console.log(this.$.clList.selection);
+      },
+
+      alreadySearched: function(search) {
+        var result = false;
+        for(var i=0; i<this.searches.length; i++) {
+          if(this.searches[i].search === search) {
+            return true;
+          }
+        }
+        return result;
+      },
+      ready: function() {
+        this.log('ready()');
+      },
+      searchClicked: function() {
+        this.log('searchClicked()');
+      },
+      log: function(what) {
+        console.log('%s: %s', new Date().toTimeString(), what);
+      }
+    });
+  </script>
+
+</polymer-element>
+
