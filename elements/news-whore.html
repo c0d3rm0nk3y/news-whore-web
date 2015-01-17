@@ -13,13 +13,17 @@
         </core-toolbar>
         <h3>Previous Searches</h3>
         <!--<div style="overflow:auto; width:250px; height:300px;">-->
-          <core-list style="overflow:auto; width:250px; height:300px;" id="clList" scroller="{{$.chpDrawer}}" data="{{searches}}" flex>
+          <core-list style="overflow:auto; width:250px; height:300px;"
+                     id="clList"
+                     height="50"
+                     scroller="{{$.chpDrawer}}"
+                     on-core-activate="{{onSearchesClicked}}"
+                     selection="{{selection}}"
+                     data="{{searches}}" >
 
             <template>
-              <div layout horizontal flex>
-                <core-icon class="prevSrchIcon" on-click="{{onSearchDelete}}" icon="delete"></core-icon>
-                <core-icon class="prevSrchIcon" icon="refresh"></core-icon>
-                <paper-item class="prevSrchItem">{{model.search}}</paper-item>
+              <div class="item {{ {selected: selected} | tokenList }}">
+                <span class="srchItm">{{model.search}}</span>
               </div>
             </template>
           </core-list>
@@ -68,7 +72,7 @@
         { search : 'monkey' },
         { search : 'puppy' }
       ],
-
+      selection: {},
       searchChangeEvent: function(e) {
         this.log('searchChangeEvent');
         //console.log( '{ search : /"' + this.$.input.committedValue + '/"}');
@@ -80,8 +84,15 @@
         this.$.input.value = "";
       },
 
-      onSearchDelete: function(index) {
-        console.log(this.$.clList.selection);
+      onSearchDelete: function() {
+        this.log('onSearchDelete()...');
+        //console.log(JSON.stringify(this.$.clList, null, 2));
+      },
+
+      onSearchesClicked: function(e) {
+        this.log('onSearchesClicked()..');
+        console.log(JSON.stringify(this.selection,null,2));
+        //console.log(JSON.stringify(e,null,2));
       },
 
       alreadySearched: function(search) {

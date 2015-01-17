@@ -30,12 +30,20 @@
   color: black;
 }
 
+.selected {
+  background: silver;
+}
+
+.srchItm {
+  margin: 5px 1px 1px 10px;
+}
+
 .prevSrchItem {
   color: grey;
-  text-align: center;
+  margin: 5px 1px 1px 10px;
 }
 
 .prevSrchIcon {
-  padding-top: 15px;
-  margin-top: 5px;
+  padding-top: 0px;
+  margin-top: 0px;
 }
